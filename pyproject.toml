@@ -1,0 +1,18 @@
+[project]
+name = "Real Time HashTag Clustering"
+version = "0.0.1"
+requires-python = ">=3.10"
+
+maintainers = [
+	{ name = "Mohamed Arish T P", email = "arish1248@gmail.com" },
+	{ name = "", email = "" }, # Midlaj fill this line and remove comment
+	{ name = "", email = "" }, # Minhaj fill this line and remove comment
+	{ name = "", email = "" }, # Nimisha fill this line and remove comment
+]
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+line-length = 79
