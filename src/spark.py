@@ -1,8 +1,9 @@
-from pyspark import SparkConf, SparkContext
-from pyspark.streaming import StreamingContext
-from pyspark.sql import Row, SQLContext
 import sys
+
 import requests
+from pyspark import SparkConf, SparkContext
+from pyspark.sql import Row, SQLContext
+from pyspark.streaming import StreamingContext
 
 
 def aggregate_tags_count(new_values, total_sum):
@@ -22,8 +23,7 @@ def process_rdd(time, rdd):
         sql_context = get_sql_context_instance(rdd.context)
         print(
             "Get spark sql singleton context from the current context"
-            " ----------- %s -----------"
-            % str(time)
+            " ----------- %s -----------" % str(time)
         )
 
         # convert the RDD to Row RDD
@@ -79,20 +79,22 @@ conf.setAppName("TwitterStreamApp")
 sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 
-# create the Streaming Context from the above spark context with interval size 2 seconds
+# create the Streaming Context from the above spark context with interval size
+# 2 seconds
 ssc = StreamingContext(sc, 2)
 
 # setting a checkpoint to allow RDD recovery
 ssc.checkpoint("checkpoint_TwitterApp")
 
 # read data from port 9009
-dataStream = ssc.socketTextStream("localhost", "port#")
+dataStream = ssc.socketTextStream("localhost", 7727)
 
 
 # split each tweet into words
 words = dataStream.flatMap(lambda line: line.split(" "))
 
-# filter the words to get only hashtags, then map each hashtag to be a pair of (hashtag,1)
+# filter the words to get only hashtags, then map each hashtag to be a pair of
+# (hashtag,1)
 hashtags = words.map(lambda x: (x, 1))
 
 # adding the count of each hashtag to its last count

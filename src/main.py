@@ -1,17 +1,22 @@
+import json
 import socket
 import sys
+
+import bleach
 import requests
 import requests_oauthlib
-import json
-import bleach
 from bs4 import BeautifulSoup
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Include your Twitter account details
-ACCESS_TOKEN = "ACCESS_TOKEN"
-ACCESS_SECRET = "ACCESS_SECRET"
-CONSUMER_KEY = "CONSUMER_KEY"
-CONSUMER_SECRET = "CONSUMER_SECRET"
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+ACCESS_SECRET = os.getenv("ACCESS_SECRET")
+CONSUMER_KEY = os.getenv("CONSUMER_KEY")
+CONSUMER_SECRET = os.getenv("CONSUMER_SECRET")
 my_auth = requests_oauthlib.OAuth1(
     CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET
 )
@@ -70,15 +75,15 @@ def send_tweets_to_spark(http_resp, tcp_connection):
 
 
 TCP_IP = "localhost"
-TCP_PORT = "port#"
+TCP_PORT = 7727
 conn = None
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind((TCP_IP, TCP_PORT))
-s.listen(1)
-
-print("Waiting for TCP connection...")
-conn, addr = s.accept()
+# s.listen(1)
+#
+# print("Waiting for TCP connection...")
+# conn, addr = s.accept()
 
 print("Connected... Starting getting tweets.")
 resp = get_tweets()
