@@ -7,7 +7,7 @@ maintainers = [
 	{ name = "Mohamed Arish T P", email = "arish1248@gmail.com" },
 	{ name = "", email = "" }, # Midlaj fill this line and remove comment
 	{ name = "", email = "" }, # Minhaj fill this line and remove comment
-	{ name = "", email = "" }, # Nimisha fill this line and remove comment
+	{ name = "Nimisha Nakshatra PJ", email = "nimisha1942001@gmail.com" }, 
 ]
 
 [tool.black]
