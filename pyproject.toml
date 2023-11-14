@@ -5,7 +5,7 @@ requires-python = ">=3.10"
 
 maintainers = [
 	{ name = "Mohamed Arish T P", email = "arish1248@gmail.com" },
-	{ name = "", email = "" }, # Midlaj fill this line and remove comment
+	{ name = "Midlaj M K", email = "midlaj45mk@gmail.com" }, 
 	{ name = "Minhaj k k", email = "minhaj19mr2001@gmail.com" },
 	{ name = "Nimisha Nakshatra PJ", email = "nimisha1942001@gmail.com" }, 
 ]
