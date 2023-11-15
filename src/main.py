@@ -7,6 +7,14 @@ import requests
 import requests_oauthlib
 from bs4 import BeautifulSoup
 
+import tweepy
+
+import pandas as pd
+import csv
+import re
+import string
+import preprocessor as p
+
 import os
 from dotenv import load_dotenv
 
@@ -22,8 +30,30 @@ my_auth = requests_oauthlib.OAuth1(
 )
 
 
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
+
+api = tweepy.API(auth, wait_on_rate_limit=True)
+
+csvFile = open("file-name", "a")
+csvWriter = csv.writer(csvFile)
+
+search_words = "#"  # enter your words
+new_search = search_words + " -filter:retweets"
+
+for tweet in tweepy.Cursor(
+    api.search, q=new_search, count=100, lang="en", since_id=0
+).items():
+    csvWriter.writerow([
+        tweet.created_at,
+        tweet.text.encode("utf-8"),
+        tweet.user.screen_name.encode("utf-8"),
+        tweet.user.location.encode("utf-8"),
+    ])
+
+
 def get_tweets():
-    url = "https://stream.twitter.com/1.1/statuses/filter.json"
+    url = "https://api.twitter.com/2/tweets"
     query_data = [
         ("language", "en"),
         ("locations", "-130,-20,100,50"),
@@ -80,10 +110,10 @@ conn = None
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.bind((TCP_IP, TCP_PORT))
-# s.listen(1)
-#
-# print("Waiting for TCP connection...")
-# conn, addr = s.accept()
+s.listen(1)
+
+print("Waiting for TCP connection...")
+conn, addr = s.accept()
 
 print("Connected... Starting getting tweets.")
 resp = get_tweets()

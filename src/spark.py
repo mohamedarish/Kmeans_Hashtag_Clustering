@@ -23,7 +23,8 @@ def process_rdd(time, rdd):
         sql_context = get_sql_context_instance(rdd.context)
         print(
             "Get spark sql singleton context from the current context"
-            " ----------- %s -----------" % str(time)
+            " ----------- %s -----------"
+            % str(time)
         )
 
         # convert the RDD to Row RDD
