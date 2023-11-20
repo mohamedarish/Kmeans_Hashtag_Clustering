@@ -12,6 +12,7 @@ maintainers = [
 
 [tool.black]
 line-length = 79
+exclude = ".venv/"
 
 [tool.isort]
 profile = "black"

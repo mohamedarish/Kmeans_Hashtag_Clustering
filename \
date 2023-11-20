@@ -1,26 +1,22 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType
-from pyspark.sql.functions import explode, split
+from pyspark.sql.functions import explode
+from pyspark.sql.functions import split
 
 spark = SparkSession.builder.appName(
     "StructuredNetworkWordCount"
 ).getOrCreate()
 
-userSchema = (
-    StructType()
-    .add("id1", "string")
-    .add("id2", "string")
-    .add("time", "string")
-    .add("NO_QUERY", "string")
-    .add("username", "string")
-    .add("content", "string")
-)
+# userSchema = .add("name", "string").add("salary", "integer")
 
 # Create DataFrame representing the stream of input lines from connection to localhost:9999
-lines = spark.read.csv("assets/data.csv", header=True, inferSchema=True)
+lines = (
+    spark.readStream.option("sep", ";").option("header", "false")
+    # .schema(userSchema)
+    .csv("assets/data.csv")
+)
 
 # Split the lines into words
-words = lines.select(explode(str(split(lines, " "))).alias("word"))
+words = lines.select(explode(split(lines.value, " ")).alias("word"))
 
 # Generate running word count
 wordCounts = words.groupBy("word").count()
