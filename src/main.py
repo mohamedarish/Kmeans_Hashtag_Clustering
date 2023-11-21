@@ -6,6 +6,7 @@ spark = SparkSession.builder.appName(
     "StructuredNetworkWordCount"
 ).getOrCreate()
 
+
 userSchema = (
     StructType()
     .add("id1", "string")
