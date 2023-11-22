@@ -1,31 +1,28 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType
-from pyspark.sql.functions import explode, split
+from pyspark.sql.functions import col, explode, split
 
-spark = SparkSession.builder.appName(
-    "StructuredNetworkWordCount"
-).getOrCreate()
+# Create a Spark session
+spark = SparkSession.builder.appName("WordOccurrence").getOrCreate()
 
-userSchema = (
-    StructType()
-    .add("id1", "string")
-    .add("id2", "string")
-    .add("time", "string")
-    .add("NO_QUERY", "string")
-    .add("username", "string")
-    .add("content", "string")
+# Read the CSV file into a Spark DataFrame
+csv_file_path = "assets/init_data.csv"
+df = spark.read.option("header", "false").csv(csv_file_path)
+
+# Extract the words from the 4th column using the split function
+words_df = df.withColumn("words", split(col("_c4"), " "))
+
+# Explode the array of words into separate rows
+exploded_df = words_df.select(
+    col("_c0").alias("ID"), explode(col("words")).alias("word")
 )
 
-# Create DataFrame representing the stream of input lines from connection to localhost:9999
-lines = spark.read.csv("assets/data.csv", header=True, inferSchema=True)
+# Group by the word and count its occurrences
+word_occurrences = exploded_df.groupBy("word").count().orderBy("count")
 
-# Split the lines into words
-words = lines.select(explode(str(split(lines, " "))).alias("word"))
+# Show the results
+word_occurrences.show(word_occurrences.count(), truncate=False)
 
-# Generate running word count
-wordCounts = words.groupBy("word").count()
+print(word_occurrences.count())
 
-# Start running the query that prints the running counts to the console
-query = wordCounts.writeStream.outputMode("complete").format("console").start()
-
-query.awaitTermination()
+# Stop the Spark session
+spark.stop()
